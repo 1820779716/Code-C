@@ -10,7 +10,7 @@ Description: This programe is use to manage emplyee's salary, the controls
              delete data and save the data into the binary file, and it
              also could account the salary about the after-tax wages.
 
-Others: The function of write still have some quetions.
+Others: Interface to be beautified.
 
 Function List:
 1.read()    //reading file employee salary data and assigning it to 
@@ -25,12 +25,11 @@ Function List:
 8.grsds()    //account employee's tax
 
 History:
-   <author>     <time>     <version>           <desc>
-     Jeff      18/06/23       0.1       correct some problem
+   <author>     <time>     <version>             <desc>
+     Jeff      18/06/24       0.1        use fprintf instead of fwrite
 ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
 #include <string.h>
 
 struct Employee{
@@ -53,10 +52,10 @@ void read()    //定义读取职工工资数据函数
 {
     FILE *fp = fopen("gx.dat","rb");    //定义文件指针
     int i = 0;
+	char ch;
     if((fp == NULL))    //打开当前目录下文件
     {
         printf("\n文件打开失败！");
-        getch();
         exit(-1);
     }
 
@@ -73,7 +72,7 @@ void read()    //定义读取职工工资数据函数
             break;
         }	
     }
-    /*
+    
     for (i = 0; i < n; i ++)    //输出结构体数组数据（用于检测）
     {
          printf("\n%s %s %.2f %.2f %.2f %.2f %.2f %.2f %.2f \n",
@@ -82,7 +81,7 @@ void read()    //定义读取职工工资数据函数
                   zggz[i].jx_salary, zggz[i].yf_salary, 
                   zggz[i].tax, zggz[i].actual_wage);
     }
-    */
+    
 
     fclose(fp);    //关闭文件
     printf("\n文件读取结束！");
@@ -92,25 +91,31 @@ void read()    //定义读取职工工资数据函数
 
 void write()    //定义保存职工工资数据函数
 {
-    FILE *fp = fopen("gx.dat","rb+");
-    int i = 0;
-
+    FILE *fp = fopen("gx.dat","wb");
+    int i;
     if((fp == NULL))    //打开当前目录下文件
     {
         printf("\n文件打开失败！");
-        getch();
-        exit(-1);
+        exit(1);
     }
 
+    for (i = 0; i < n; i ++)    //将数据写入二进制文件
+    {
+        fprintf(fp, "%s %s %f %f %f %f %f %f %f \n",
+		          zggz[i].number, zggz[i].name, zggz[i].gw_salary, 
+                  zggz[i].xj_salary, zggz[i].subsidy, 
+                  zggz[i].jx_salary, zggz[i].yf_salary, 
+                  zggz[i].tax, zggz[i].actual_wage);
+    }
+	/*
 	for(i = 0; i < n; i ++)
     {
         fwrite(&zggz[i], sizeof(zggz[i]), 1, fp);    //将数据写入二进制文件
-        fprintf(fp, " \n");    //给写入文件的数据尾部加入换行符
     }
-
+	*/
     fclose(fp);
     printf("\n文件保存完毕！");
-    printf("\n共有%d条数据被写入二进制文件\n\n", n);
+    printf("\n共有%d条数据被写入文件\n\n", i);
 }
 
 void find()    //定义查询职工工资数据函数
@@ -285,7 +290,7 @@ void add()    //定义添加职工工资数据函数
 	int i, j = n;
 	int flag = 1;
 
-    printf("\n--------------------------添加--------------------------\n");
+    printf("\n----------------------添加----------------------\n");
     printf("\n请输入职工基本信息：");
     for(; j < 100; )
     {
@@ -343,7 +348,7 @@ void add()    //定义添加职工工资数据函数
         {
             for(; n < j; n +=1)
             {
-                printf("\n--------------------所增职工信息--------------------\n");
+                printf("\n------------------所增职工信息------------------\n");
                 printf("\n职员工号：%s\t\n姓名：%s\t\n岗位工资：%.2f\t",
                     zggz[n].number, zggz[n].name, zggz[n].gw_salary);
                 printf("\n薪级工资：%.2f\t\n职务津贴：%.2f\t\n绩效工资：%.2f\t", 
@@ -359,14 +364,14 @@ void add()    //定义添加职工工资数据函数
         }
         */
     }
-    printf("\n----------------------所增职工信息----------------------\n");
+    printf("\n------------------所增职工信息------------------\n");
     printf("\n职员工号：%s\t\n姓名：%s\t\n岗位工资：%.2f\t",
         zggz[i].number, zggz[i].name, zggz[i].gw_salary);
     printf("\n薪级工资：%.2f\t\n职务津贴：%.2f\t\n绩效工资：%.2f\t", 
         zggz[i].xj_salary, zggz[i].subsidy, zggz[i].jx_salary);
     printf("\n应发工资：%.2f\t\n个人所得税：%.2f\t\n实发工资：%.2f\t",
         zggz[i].yf_salary, zggz[i].tax, zggz[i].actual_wage);
-    printf("\n------------------------添加完成------------------------\n");
+    printf("\n--------------------添加完成--------------------\n");
 }
 
 void grsds(int m)    //定义计算职工个人所得税函数
