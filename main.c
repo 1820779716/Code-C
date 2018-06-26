@@ -1,7 +1,7 @@
 /****************************************************************************
 Copyright (C), 2018, Jeff, Ltd.
 
-File name: main.c
+File name: main.cpp    
 
 Author:  Jeff   Version:  0.1    Date:  2018.06.23
 
@@ -22,11 +22,11 @@ Function List:
 5.modify()    //modify employee's wage data
 6.del()    //delete employee's data
 7.add()    //add new employee's data
-8.grsds(int m)    //account employee's tax
+8.grsds()    //account employee's tax
 
 History:
-   <author>     <time>     <version>               <desc>
-     Jeff      18/06/26       0.1       Fix some bug and repair interface
+   <author>     <time>     <version>                <desc>
+     Jeff      18/06/26       0.1       correct the flag initialize of grsds
 ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -115,7 +115,7 @@ void find()    //定义查询职工工资数据函数
 {
     char gonghao[10];
     int i;
-	int flag = 1;
+    int flag = 1;
 	
     printf("\n--------------------查询--------------------\n");
     printf("\n请输入所要查询的工号：");
@@ -136,7 +136,7 @@ void find()    //定义查询职工工资数据函数
                 printf("\n应发工资：%.2f\t\n个人所得税：%.2f\t\n实发工资：%.2f\t\n",
                     zggz[i].yf_salary, zggz[i].tax, zggz[i].actual_wage);
 
-		        flag = 0;
+                flag = 0;
                 printf("\n------------------查询结束------------------\n");
                 break;
             }
@@ -144,7 +144,7 @@ void find()    //定义查询职工工资数据函数
         if(flag == 1)
         {
             printf("\n无此工号职员信息\n");
-	    	printf("\n请输入正确的工号：");
+            printf("\n请输入正确的工号：");
         }
     }while(flag);
 }
@@ -228,11 +228,11 @@ void modify()    //定义修改职工工资数据函数
 void del()    //定义删除职工工资数据函数
 {
     char gonghao[10];
-	char s[5];
+    char s[5];
     int i, j;
-	int flag = 1;
-    printf("\n--------------------删除--------------------\n");
+    int flag = 1;
 
+    printf("\n--------------------删除--------------------\n");
     do
     {
         printf("\n请输入所要删除的职员工号：");
@@ -266,15 +266,15 @@ void del()    //定义删除职工工资数据函数
         {
             printf("\n无此工号职员信息\n");
             flag = 0;
-		}
+        }
     }while(flag);
 }
 
 void add()    //定义添加职工工资数据函数
 {
     char s[10];
-	int i;
-	int flag = 1;
+    int i;
+    int flag = 1;
 
     printf("\n--------------------添加--------------------\n");
     printf("\n请输入职工基本信息：");
@@ -294,7 +294,7 @@ void add()    //定义添加职工工资数据函数
             if(i == n)    //职员工号无重复，开始赋值
             {
                 strcpy(zggz[n].number, s);
-				//printf("\n职员工号：%s\n", zggz[i].number);
+                //printf("\n职员工号：%s\n", zggz[i].number);
                 flag = 0;    //赋值后控制循环体结束循环
             }
     }while(flag);
@@ -406,7 +406,7 @@ int main()
         printf("\n--------------职工工资管理系统--------------\n");
         printf("1（查询），2（修改），3（添加），4（删除）\n");
         printf("5（保存），6（浏览），7（退出）\n");
-        printf("请输入操作指令：");
+        printf("请输入想进行操作的指令：");
         scanf("%s",  s);
         if(strcmp(s ,"1") == 0)
         {
