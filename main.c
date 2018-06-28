@@ -121,7 +121,7 @@ void read()    //定义读取职工工资数据函数
 
 void write()    //定义保存职工工资数据函数
 {
-    FILE *fp = fopen("gx.dat","wb");
+    FILE *fp = fopen("gz.dat","wb");
     int i;
     if((fp == NULL))    //打开当前目录下文件
     {
