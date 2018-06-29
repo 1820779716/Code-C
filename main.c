@@ -27,8 +27,8 @@ Function List:
 10.show_data(int i)  //show employee's data
 
 History:
-   <author>     <time>     <version>          <desc>
-     Jeff      18/06/28       0.1       modify some format
+   <author>     <time>     <version>        <desc>
+     Jeff      18/06/29       0.1       adjust structure
 ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,20 +48,109 @@ struct Employee{
 
 int n = 0;	//用于记录写入结构体数据的总数
 
-void grsds(int m);    //声明计算职工工资数据函数
+void input_data(int i);  //声明输入职员工资数据的函数
+void show_data(int i);   //声明显示职员工资数据的函数
+void read();        //声明读取职工工资数据的函数
+void write();       //声明保存职工工资数据的函数
+void find();        //声明查询职工工资数据的函数
+void list();        //声明浏览职工工资数据的函数
+void modify();      //声明修改职工工资数据的函数
+void del();         //声明删除职工工资数据的函数
+void add();         //声明添加职工工资数据的函数
+void grsds(int i);  //声明计算个人所得税的函数
+
+
+int main()
+{
+    char s[5], ch[5];
+    int flag = 1;    //用于控制循环体
+    read();
+
+    while(flag)
+    {
+        printf("\n\n\n\t");
+        printf("###  欢迎使用广西民族大学软件与信息安全学院职工工资管理系统  ###");
+        printf("\n\n\n\t");
+        printf("请选择（1 - 7）：\n\t");
+        printf("================================================================");
+        printf("\n\t");
+        printf("|        1. 查询职工工资记录                                   |");
+        printf("\n\t");
+        printf("|        2. 修改职工工资记录                                   |");
+        printf("\n\t");
+        printf("|        3. 添加职工工资记录                                   |");
+        printf("\n\t");
+        printf("|        4. 删除职工工资记录                                   |");
+        printf("\n\t");
+        printf("|        5. 保存数据到文件                                     |");
+        printf("\n\t");
+        printf("|        6. 浏览职工记录                                       |");
+        printf("\n\t");
+        printf("|        7. 退出系统                                           |");
+        printf("\n\t");
+        printf("================================================================");
+        printf("\n\n\t");
+        printf("你的选择是：");
+        scanf("%s",  s);
+        printf("\n\t");
+
+        if(strcmp(s ,"1") == 0)
+        {
+            find();
+        }
+        else if(strcmp(s ,"2") == 0)
+        {
+            modify();
+        }
+        else if(strcmp(s ,"3") == 0)
+        {
+            add();
+        }
+        else if(strcmp(s ,"4") == 0)
+        {
+            del();
+        }
+        else if(strcmp(s ,"5") == 0)
+        {
+            write();
+        }
+        else if(strcmp(s ,"6") == 0)
+        {
+            list();
+        }
+        else if(strcmp(s ,"7") == 0)
+        {
+            printf("\n\t是否需要帮您保存数据？是：y，否：任意字符\n\t");
+            scanf("%s", ch);
+            if(strcmp(ch, "y") == 0)
+            {
+                write();
+            }
+            printf("\n\t");
+            printf("---------------------------程序已退出---------------------------");
+            printf("\n\t");
+            flag = 0;
+        }
+        else
+        {
+            printf("\n\t无该指令，请重新输入！\n\n");
+        }
+    }
+    return 0;
+}
 
 void input_data(int i)    //用于输入职员工资信息
 {
-    printf("\n岗位工资：");    //输入岗位工资
+    printf("\n\t岗位工资：");    //输入岗位工资
     scanf("%f", &zggz[i].gw_salary);
 
-    printf("\n薪级工资：");    //输入薪级工资
+    printf("\n\t薪级工资：");    //输入薪级工资
     scanf("%f", &zggz[i].xj_salary);
 
-    printf("\n职务津贴：");    //输入职务津贴
+    printf("\n\t职务津贴：");    //输入职务津贴
     scanf("%f", &zggz[i].subsidy);
 
-    printf("\n绩效工资：");    //输入绩效工资
+    printf("\n\t绩效工资：");    //输入绩效工资
     scanf("%f", &zggz[i].jx_salary);
 
     zggz[i].yf_salary = zggz[i].gw_salary + zggz[i].xj_salary 
@@ -74,13 +163,13 @@ void input_data(int i)    //用于输入职员工资信息
 
 void show_data(int i)    //显示某职员信息的函数
 {
-    printf("\n职员工号：%s\n职员姓名：%s\n岗位工资：%.2f", 
+    printf("\n\t职员工号：%s\n\t职员姓名：%s\n\t岗位工资：%.2f",
         zggz[i].number, zggz[i].name, zggz[i].gw_salary);
 
-    printf("\n薪级工资：%.2f\n职务津贴：%.2f\n绩效工资：%.2f", 
+    printf("\n\t薪级工资：%.2f\n\t职务津贴：%.2f\n\t绩效工资：%.2f",
         zggz[i].xj_salary, zggz[i].subsidy, zggz[i].jx_salary);
 
-    printf("\n应发工资：%.2f\n个人所得税：%.2f\n实发工资：%.2f\n", 
+    printf("\n\t应发工资：%.2f\n\t个人所得税：%.2f\n\t实发工资：%.2f\n",
         zggz[i].yf_salary, zggz[i].tax, zggz[i].actual_wage);
 }
 
@@ -90,7 +179,7 @@ void read()    //定义读取职工工资数据函数
     int i;
     if((fp == NULL))    //打开当前目录下文件
     {
-        printf("\n文件打开失败！");
+        printf("\n\t文件打开失败！\n");
         exit(-1);
     }
 
@@ -114,7 +203,9 @@ void read()    //定义读取职工工资数据函数
     for (i = 0; i < n; i ++)    //输出结构体数组数据（用于检测）
     {
         show_data(i);
-        printf("\n---------------文件读取完毕！---------------\n");
+        printf("\n\t");
+        printf("-------------------------文件读取完毕！-------------------------");
+        printf("\n");
     }
     */
 }
@@ -125,7 +216,7 @@ void write()    //定义保存职工工资数据函数
     int i;
     if((fp == NULL))    //打开当前目录下文件
     {
-        printf("\n文件打开失败！");
+        printf("\n\t文件打开失败！\n");
         exit(1);
     }
 
@@ -138,57 +229,67 @@ void write()    //定义保存职工工资数据函数
                     zggz[i].tax, zggz[i].actual_wage);
     }
     fclose(fp);    //关闭文件
-    printf("\n---------------文件保存完毕！---------------\n");
+    printf("\n\t");
+    printf("-------------------------文件保存完毕！-------------------------");
+    printf("\n");
 }
 
 void find()    //定义查询职工工资数据函数
 {
     char gonghao[10];
-	char s[5];
+    char s[5];
     int i;
     int flag = 1;
 	
-    printf("\n--------------------查询--------------------\n");
-    do{
-        printf("\n请输入所要查询的工号：");
+    printf("\n\t");
+    printf("------------------------------查询------------------------------");
+    while(flag)
+    {
+        printf("\n\t请输入所要查询的工号：");
         scanf("%s", gonghao);
         for(i = 0; i < n; i ++)
         {
             if(strcmp(gonghao, zggz[i].number) == 0)
             {
-                printf("\n-------------所查询的职工信息为-------------\n");
+                printf("\n\t");
+                printf("-----------------------所查询的职工信息为-----------------------");
 
                 show_data(i);
 
                 flag = 0;
-                printf("\n------------------查询结束------------------\n");
+                printf("\n\t");
+                printf("----------------------------查询结束----------------------------");
                 break;
             }
         }
         if(flag == 1)
         {
-            printf("\n无此工号职员信息\n");
-            printf("\n是否结束查询？是：y，否：n\n");
+            printf("\n\t无此工号职员信息\n");
+            printf("\n\t是否继续查询？是：y，否：任意字符\n\t");
             scanf("%s", s);
             if(strcmp(s, "y") == 0)
             {
+                flag = 1;
+            }
+            else
+            {
                 flag = 0;
             }
-			else if(strcmp(s, "n") == 0)
-            {}
         }
-    }while(flag);
+    }
 }
 
 void list()    //定义浏览职工工资数据函数
 {
     int i;
-    printf("\n--------------浏览职工工资数据--------------\n");
+    printf("\n\t");
+    printf("------------------------浏览职工工资数据------------------------");
     for(i = 0; i < n; i ++)
     {
         show_data(i);
     }
-    printf("\n------------------浏览结束------------------\n");
+    printf("\n\t");
+    printf("----------------------------浏览结束----------------------------");
 }
 
 void modify()    //定义修改职工工资数据函数
@@ -196,40 +297,43 @@ void modify()    //定义修改职工工资数据函数
     char gonghao[10], s[10];
     int i, flag = 1;
 
-    printf("\n--------------------修改--------------------\n");
-    do
+    printf("\n\t");
+    printf("------------------------------修改------------------------------");
+    while(flag)
     {
-        printf("\n请输入所要重新录入数据的职员工号：");
+        printf("\n\t请输入所要重新录入数据的职员工号：");
         scanf("%s", gonghao);
         for(i = 0; i < n; i ++)
         {
             if(strcmp(gonghao, zggz[i].number) == 0)
             {
-                printf("\n请录入该职员工资数据：\n");
+                printf("\n\t请录入该职员工资数据：\n");
                 
                 input_data(i);
 
-                printf("\n------------------修改结束------------------\n");
-
+                printf("\n\t");
+                printf("----------------------------修改结束----------------------------");
                 flag = 0;    //控制循环结束
                 break;
             }
         }
-        if(flag == 1)
+        if(flag)
         {
-            printf("\n无此工号职工信息\n");
+            printf("\n\t无此工号职工信息\n\t");
 
-            printf("是否放弃修改？是：y 否：n\n");
+            printf("是否继续修改？是：y 否：任意字符\n\t");
             scanf("%s", s);
+
             if(strcmp(s, "y") == 1)
+            {
+                flag = 1;
+            }
+            else
             {
                 flag = 0;
             }
-            else if(strcmp(s, "n") == 1)
-            {
-            }
         }
-    }while(flag);
+    }
 }
 
 void del()    //定义删除职工工资数据函数
@@ -239,14 +343,15 @@ void del()    //定义删除职工工资数据函数
     int i, j;
     int flag = 1;
 
-    printf("\n--------------------删除--------------------\n");
-    printf("\n请输入所要删除的职员工号：");
+    printf("\n\t");
+    printf("------------------------------删除------------------------------");
+    printf("\n\t请输入所要删除的职员工号：");
     scanf("%s", gonghao);
     for(i = 0; i < n; i ++)
     {
         if(strcmp(gonghao, zggz[i].number) == 0)
         {
-            printf("\n是否删除该职员信息？是：y，否：n\n");
+            printf("\n\t是否删除该职员信息？是：y，否：任意字符\n\t");
             scanf("%s", s);
             if(strcmp(s, "y") == 0)
             {
@@ -256,20 +361,23 @@ void del()    //定义删除职工工资数据函数
                 }
                 n -= 1;    //记录总人数
                 flag = 0;
-                printf("\n------------------删除成功------------------\n");
+                printf("\n\t");
+                printf("----------------------------删除成功----------------------------");
                 break;
             }
-            else if(strcmp(s, "n") == 0)
+            else
             {
                 flag = 0;
-                printf("\n------------------删除取消------------------\n");
+                printf("\n\t");
+                printf("----------------------------删除取消----------------------------");
                 break;
             }
         }
     }
-    if(flag == 1)    //查找后不存在工号
+    if(flag)    //查找后不存在工号
     {
-        printf("\n-------------无此工号职员信息！-------------\n");
+        printf("\n\t");
+        printf("-----------------------无此工号职员信息！-----------------------");
     }
 }
 
@@ -277,54 +385,67 @@ void add()    //定义添加职工工资数据函数
 {
     char s[10];
     int i;
-    int flag = 1;
+    int flag = 1;    //控制循环体
+    int flag_1 = 0;  //控制是否输入数据
 
-    printf("\n--------------------添加--------------------\n");
-    printf("\n请输入职工基本信息：");
-    do
+    printf("\n\t");
+    printf("------------------------------添加------------------------------");
+    printf("\n\t请输入职工基本信息：\n");
+    while(flag)
     {
-        printf("\n职员工号：");    //输入职员工号
+        printf("\n\t职员工号：");    //输入职员工号
         scanf("%s", s);
         for(i = 0; i < n; i ++)
         {
             if(strcmp(s, zggz[i].number) == 0)
                 {
-                    printf("\n该职员工号已存在，请重新输入！\n");
-                    flag = 1;
+                    printf("\n\t该职员工号已存在！\n");
+                    printf("\n\t是否重新输入？是：y，否：任意字符\n\t");
+                    scanf("%s", s);
+                    if(strcmp(s, "y") == 0)
+                    {
+                        flag = 1;
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
                     break;
                 }
-            }
-            if(i == n)    //职员工号无重复，开始赋值
-            {
-                strcpy(zggz[n].number, s);
-                //printf("\n职员工号：%s\n", zggz[i].number);
-                flag = 0;    //赋值后控制循环体结束循环
-            }
-    }while(flag);
+        }
+        if(i == n)    //职员工号无重复，开始赋值
+        {
+            strcpy(zggz[n].number, s);
+            flag = 0;
+            flag_1 = 1;
+        }
+    }
+    if(flag_1)
+    {
+        printf("\n\t职员姓名：");    //输入职员姓名
+        scanf("%s", zggz[n].name);
 
-    printf("\n职员姓名：");    //输入职员姓名
-    scanf("%s", zggz[n].name);
+        input_data(n);
 
-    input_data(n);
-		
-    printf("\n----------------所增职工信息----------------\n");
+        printf("\n\t");
+        printf("--------------------------所增职工信息--------------------------");
 
-    show_data(n);
+        show_data(n);
 
-    printf("\n------------------添加完成------------------\n");
-
-    n += 1;    //总人数+1
-    //printf("\n总人数为：%d\n", n);
+        n += 1;    //总人数+1
+    }
+    printf("\n\t");
+    printf("--------------------------添加执行结束--------------------------");
 }
 
-void grsds(int m)    //定义计算职工个人所得税函数
+void grsds(int i)    //定义计算职工个人所得税函数
 {
-	double count, tax;
-	int flag = 1;
-	count = zggz[m].yf_salary;    //应发工资
-	zggz[m].tax = 0;    //作累加器
+    double count, tax;
+    int flag = 1;
+    count = zggz[i].yf_salary;    //应发工资
+    zggz[i].tax = 0;    //作累加器
 
-    do
+    while(flag)
     {
         if(count > 100000)
         {
@@ -371,64 +492,6 @@ void grsds(int m)    //定义计算职工个人所得税函数
             tax = count * 0.05;
             flag = 0;    //应发工资收取个人所得税部分小于500停止
         }
-        zggz[m].tax += tax;    //累加每层的个人所得税
-    }while(flag);
-}
-
-int main()
-{
-    char s[5], ch[5];
-    int flag = 1;    //用于控制循环体
-    read();
-    do
-    {
-        printf("\n--------------职工工资管理系统--------------\n");
-        printf("1（查询），2（修改），3（添加），4（删除）\n");
-        printf("5（保存），6（浏览），7（退出）\n");
-        printf("请输入想进行操作的指令：");
-        scanf("%s",  s);
-        if(strcmp(s ,"1") == 0)
-        {
-            find();
-        }
-        else if(strcmp(s ,"2") == 0)
-        {
-            modify();
-        }
-        else if(strcmp(s ,"3") == 0)
-        {
-            add();
-        }
-        else if(strcmp(s ,"4") == 0)
-        {
-            del();
-        }
-        else if(strcmp(s ,"5") == 0)
-        {
-            write();
-        }
-        else if(strcmp(s ,"6") == 0)
-        {
-            list();
-        }
-        else if(strcmp(s ,"7") == 0)
-        {
-            printf("\n请确认文件是否已经保存,是：y，否：n\n\n");
-            scanf("%s", ch);
-            if(strcmp(ch, "y") == 0)
-            {
-            }
-            else if(strcmp(ch, "n") == 0)
-            {
-                write();
-            }
-            printf("\n-----------------程序已退出-----------------\n");
-            flag = 0;
-        }
-        else
-        {
-            printf("\n无该指令，请重新输入！\n\n");
-        }
-    }while(flag);
-    return 0;
+        zggz[i].tax += tax;    //累加每层的个人所得税
+    }
 }
