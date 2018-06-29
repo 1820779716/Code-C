@@ -104,7 +104,14 @@ int main()
         }
         else if(strcmp(s ,"3") == 0)
         {
-            add();
+            if(n < 100)
+            {
+                add();
+            }
+            else
+            {
+                printf("\n\t人数超出限制！\n\n");
+            }
         }
         else if(strcmp(s ,"4") == 0)
         {
