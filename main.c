@@ -28,7 +28,7 @@ Function List:
 
 History:
    <author>     <time>     <version>        <desc>
-     Jeff      18/06/29       0.1       adjust structure
+     Jeff      18/07/01       0.1       adjust structure
 ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,16 +37,16 @@ History:
 struct Employee{
     char number[10];    //职员工号
     char name[10];      //职员姓名
-    float gw_salary;    //岗位工资
-    float xj_salary;    //薪级工资
+    float gwgz;         //岗位工资
+    float xjgz;         //薪级工资
     float subsidy;      //职务津贴
-    float jx_salary;    //绩效工资
-    float yf_salary;    //应发工资
+    float jxgz;         //绩效工资
+    float yfgz;         //应发工资
     float tax;          //个人所得税
-    float actual_wage;  //实发工资
+    float sfgz;         //实发工资
 }zggz[100];
 
-int n = 0;	//用于记录写入结构体数据的总数
+int n = 0;    //用于记录写入结构体数据的总数
 
 void input_data(int i);  //声明输入职员工资数据的函数
 void show_data(int i);   //声明显示职员工资数据的函数
@@ -149,61 +149,72 @@ int main()
 void input_data(int i)    //用于输入职员工资信息
 {
     printf("\n\t岗位工资：");    //输入岗位工资
-    scanf("%f", &zggz[i].gw_salary);
+    scanf("%f", &zggz[i].gwgz);
 
     printf("\n\t薪级工资：");    //输入薪级工资
-    scanf("%f", &zggz[i].xj_salary);
+    scanf("%f", &zggz[i].xjgz);
 
     printf("\n\t职务津贴：");    //输入职务津贴
     scanf("%f", &zggz[i].subsidy);
 
     printf("\n\t绩效工资：");    //输入绩效工资
-    scanf("%f", &zggz[i].jx_salary);
+    scanf("%f", &zggz[i].jxgz);
 
-    zggz[i].yf_salary = zggz[i].gw_salary + zggz[i].xj_salary 
-            + zggz[i].subsidy + zggz[i].jx_salary;
+    zggz[i].yfgz = zggz[i].gwgz + zggz[i].xjgz 
+            + zggz[i].subsidy + zggz[i].jxgz;
 
     grsds(i);    //计算个人所得税
 
-    zggz[i].actual_wage = zggz[i].yf_salary - zggz[i].tax;
+    zggz[i].sfgz = zggz[i].yfgz - zggz[i].tax;
 }
 
 void show_data(int i)    //显示某职员信息的函数
 {
     printf("\n\t职员工号：%s\n\t职员姓名：%s\n\t岗位工资：%.2f",
-        zggz[i].number, zggz[i].name, zggz[i].gw_salary);
+        zggz[i].number, zggz[i].name, zggz[i].gwgz);
 
     printf("\n\t薪级工资：%.2f\n\t职务津贴：%.2f\n\t绩效工资：%.2f",
-        zggz[i].xj_salary, zggz[i].subsidy, zggz[i].jx_salary);
+        zggz[i].xjgz, zggz[i].subsidy, zggz[i].jxgz);
 
     printf("\n\t应发工资：%.2f\n\t个人所得税：%.2f\n\t实发工资：%.2f\n",
-        zggz[i].yf_salary, zggz[i].tax, zggz[i].actual_wage);
+        zggz[i].yfgz, zggz[i].tax, zggz[i].sfgz);
 }
 
 void read()    //定义读取职工工资数据函数
 {
     FILE *fp = fopen("gx.dat", "rb");    //定义文件指针
-    int i;
+    int i = 0;
     if((fp == NULL))    //打开当前目录下文件
     {
         printf("\n\t文件打开失败！\n");
         exit(-1);
     }
 
+    /*
     for(i = 0; i < 100; i ++)    //读取文件的数据并存到结构体数组zggz中
     {
         int nRes = fscanf(fp, "%s %s %f %f %f %f %f %f %f",
-                  zggz[i].number, zggz[i].name, &zggz[i].gw_salary, 
-                  &zggz[i].xj_salary, &zggz[i].subsidy, &zggz[i].jx_salary,
-                  &zggz[i].yf_salary, &zggz[i].tax, &zggz[i].actual_wage);
+                  zggz[i].number, zggz[i].name, &zggz[i].gwgz, 
+                  &zggz[i].xjgz, &zggz[i].subsidy, &zggz[i].jxgz,
+                  &zggz[i].yfgz, &zggz[i].tax, &zggz[i].sfgz);
 
         if (nRes == -1)    //判断是否读取到文件尾部
         {
             n = i;    //记录写入数据的条数
             fclose(fp);
             break;
-        }	
+        }
     }
+    */
+    while(!feof(fp))
+    {
+        fread(&zggz[i], sizeof(zggz), 1, fp);
+        if(!feof(fp))
+        {
+            i += 1;
+        }
+    }
+    n = i;
 
     fclose(fp);    //关闭文件
     /*
@@ -229,11 +240,14 @@ void write()    //定义保存职工工资数据函数
 
     for (i = 0; i < n; i ++)    //将数据写入二进制文件
     {
+        /*
         fprintf(fp, "%s %s %f %f %f %f %f %f %f \n",
-                    zggz[i].number, zggz[i].name, zggz[i].gw_salary, 
-                    zggz[i].xj_salary, zggz[i].subsidy, 
-                    zggz[i].jx_salary, zggz[i].yf_salary, 
-                    zggz[i].tax, zggz[i].actual_wage);
+                    zggz[i].number, zggz[i].name, zggz[i].gwgz, 
+                    zggz[i].xjgz, zggz[i].subsidy, 
+                    zggz[i].jxgz, zggz[i].yfgz, 
+                    zggz[i].tax, zggz[i].sfgz);
+        */
+        fwrite(&zggz[i], sizeof(zggz), 1, fp);
     }
     fclose(fp);    //关闭文件
     printf("\n\t");
@@ -247,7 +261,7 @@ void find()    //定义查询职工工资数据函数
     char s[5];
     int i;
     int flag = 1;
-	
+    
     printf("\n\t");
     printf("------------------------------查询------------------------------");
     while(flag)
@@ -449,7 +463,7 @@ void grsds(int i)    //定义计算职工个人所得税函数
 {
     double count, tax;
     int flag = 1;
-    count = zggz[i].yf_salary;    //应发工资
+    count = zggz[i].yfgz;    //应发工资
     zggz[i].tax = 0;    //作累加器
 
     while(flag)
