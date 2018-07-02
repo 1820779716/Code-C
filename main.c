@@ -22,21 +22,21 @@ Function List:
 5.modify()   //modify employee's wage data
 6.del()      //delete employee's data
 7.add()      //add new employee's data
-8.grsds(zggz *p)       //account employee's tax
-9.show_data(zggz *p)  //show employee's data
+8.grsds(int i)       //account employee's tax
+9.input_data(int i)  //input salary data and account tax
+10.show_data(int i)  //show employee's data
 
 History:
-   <author>     <time>     <version>            <desc>
-     Jeff      18/07/02       0.1       use double list to achieve 
+   <author>     <time>     <version>        <desc>
+     Jeff      18/07/02       0.1       adjust structure
 ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Employee
-{
-    char number[10];    //职工工号
-    char name[10];      //职工姓名
+struct Employee{
+    char number[10];    //职员工号
+    char name[10];      //职员姓名
     float gwgz;         //岗位工资
     float xjgz;         //薪级工资
     float subsidy;      //职务津贴
@@ -44,14 +44,12 @@ typedef struct Employee
     float yfgz;         //应发工资
     float tax;          //个人所得税
     float sfgz;         //实发工资
-    struct Employee *prior, *next;//定义前驱指针、后继指针
-}zggz;
+}zggz[100];
 
-zggz *head, *tail;
+int n = 0;    //用于记录写入结构体数据的总数
 
-int n = 0;  //记录职工数量
-
-void show_data(zggz *p);   //声明显示职员工资数据的函数
+void input_data(int i);  //声明输入职员工资数据的函数
+void show_data(int i);   //声明显示职员工资数据的函数
 void read();        //声明读取职工工资数据的函数
 void write();       //声明保存职工工资数据的函数
 void find();        //声明查询职工工资数据的函数
@@ -59,7 +57,8 @@ void list();        //声明浏览职工工资数据的函数
 void modify();      //声明修改职工工资数据的函数
 void del();         //声明删除职工工资数据的函数
 void add();         //声明添加职工工资数据的函数
-void grsds(zggz *p);  //声明计算个人所得税的函数
+void grsds(int i);  //声明计算个人所得税的函数
+
 
 int main()
 {
@@ -97,17 +96,17 @@ int main()
 
         if(strcmp(s ,"1") == 0)
         {
-            find();
+            find();//调用查询函数
         }
         else if(strcmp(s ,"2") == 0)
         {
-            modify();
+            modify();//调用修改函数
         }
         else if(strcmp(s ,"3") == 0)
         {
             if(n < 100)
             {
-                add();
+                add();//小于100条数据，调用添加函数
             }
             else
             {
@@ -116,15 +115,15 @@ int main()
         }
         else if(strcmp(s ,"4") == 0)
         {
-            del();
+            del();//调用删除函数
         }
         else if(strcmp(s ,"5") == 0)
         {
-            write();
+            write();//调用保存函数
         }
         else if(strcmp(s ,"6") == 0)
         {
-            list();
+            list();//调用浏览函数
         }
         else if(strcmp(s ,"7") == 0)
         {
@@ -132,7 +131,7 @@ int main()
             scanf("%s", ch);
             if(strcmp(ch, "y") == 0)
             {
-                write();
+                write();//退出时可选择是否调用函数保存数据
             }
             printf("\n\t");
             printf("---------------------------程序已退出---------------------------");
@@ -147,86 +146,77 @@ int main()
     return 0;
 }
 
-
-//显示某职员信息的函数（完成）
-void show_data(zggz *p)    
+void input_data(int i)    //用于输入职员工资信息
 {
-    printf("\n\t职员工号：%s\n\t职员姓名：%s\n\t岗位工资：%.2f",
-        p->number, p->name, p->gwgz);
+    printf("\n\t岗位工资：");    //输入岗位工资
+    scanf("%f", &zggz[i].gwgz);
 
-    printf("\n\t薪级工资：%.2f\n\t职务津贴：%.2f\n\t绩效工资：%.2f",
-        p->xjgz, p->subsidy, p->jxgz);
+    printf("\n\t薪级工资：");    //输入薪级工资
+    scanf("%f", &zggz[i].xjgz);
 
-    printf("\n\t应发工资：%.2f\n\t个人所得税：%.2f\n\t实发工资：%.2f\n",
-        p->yfgz, p->tax, p->sfgz);
+    printf("\n\t职务津贴：");    //输入职务津贴
+    scanf("%f", &zggz[i].subsidy);
+
+    printf("\n\t绩效工资：");    //输入绩效工资
+    scanf("%f", &zggz[i].jxgz);
+
+    zggz[i].yfgz = zggz[i].gwgz + zggz[i].xjgz 
+            + zggz[i].subsidy + zggz[i].jxgz;
+
+    grsds(i);    //计算个人所得税
+
+    zggz[i].sfgz = zggz[i].yfgz - zggz[i].tax;
 }
 
-//读取文件中职工信息（不完善，尾部总是多申请一个空间）
+void show_data(int i)    //显示某职员信息的函数
+{
+    printf("\n\t职员工号：%s\n\t职员姓名：%s\n\t岗位工资：%.2f",
+        zggz[i].number, zggz[i].name, zggz[i].gwgz);
+
+    printf("\n\t薪级工资：%.2f\n\t职务津贴：%.2f\n\t绩效工资：%.2f",
+        zggz[i].xjgz, zggz[i].subsidy, zggz[i].jxgz);
+
+    printf("\n\t应发工资：%.2f\n\t个人所得税：%.2f\n\t实发工资：%.2f\n",
+        zggz[i].yfgz, zggz[i].tax, zggz[i].sfgz);
+}
+
 void read()    //定义读取职工工资数据函数
 {
-    zggz *p;
-    int i, nRes;
-    FILE *fp = fopen("gx.dat", "rb");//定义文件指针
-
-    head = (zggz *)malloc(sizeof(zggz));//初始化链表
-    head->prior = head;
-    head->next = head;
-    p = head;
+    FILE *fp = fopen("gx.dat", "rb");    //定义文件指针
+    int i = 0;    //充当结构体数组下标
 
     if((fp == NULL))    //打开当前目录下文件
     {
         printf("\n\t文件打开失败！\n");
         exit(-1);
     }
-    
-    for(i = 0; i < 100; i ++)
-    {
-        nRes = fscanf(fp, "%s %s %f %f %f %f %f %f %f",
-                  p->number, p->name, &(p->gwgz), 
-                  &(p->xjgz), &(p->subsidy), &(p->jxgz),
-                  &(p->yfgz), &(p->tax), &(p->sfgz));
 
-        if (nRes == -1)    //判断是否读取到文件尾部
+    while(!feof(fp))//判断是否读取到文件尾部
+    {
+        fread(&zggz[i], sizeof(zggz), 1, fp);
+        if(!feof(fp))
         {
-            n = i;    //记录写入数据的条数
-            fclose(fp);
-            break;
+            i += 1;
         }
-        tail = (zggz *)malloc(sizeof(zggz));
-        p->next = tail;
-        tail->prior = p;
-        tail->next = head;
-        head->prior = tail;
-        p = tail;
     }
-    fclose(fp);
+    n = i;
+
+    fclose(fp);    //关闭文件
 }
 
-//保存职工信息至文件
-void write()
+void write()    //定义保存职工工资数据函数
 {
     FILE *fp = fopen("gz.dat","wb");
     int i;
-    zggz *p = head;
-
     if((fp == NULL))    //打开当前目录下文件
     {
         printf("\n\t文件打开失败！\n");
         exit(1);
     }
-    
+
     for (i = 0; i < n; i ++)    //将数据写入二进制文件
     {
-        fprintf(fp, "%s %s %f %f %f %f %f %f %f \n",
-                    p->number, p->name, p->gwgz, 
-                    p->xjgz, p->subsidy, 
-                    p->jxgz, p->yfgz, 
-                    p->tax, p->sfgz);
-        p = p->next;
-        /*
-        fwrite(p , sizeof(zggz), 1, fp);
-        p = p->next;
-        */
+        fwrite(&zggz[i], sizeof(zggz), 1, fp);
     }
     fclose(fp);    //关闭文件
     printf("\n\t");
@@ -234,141 +224,85 @@ void write()
     printf("\n");
 }
 
-//查询职工工资信息
-void find()
+void find()    //定义查询职工工资数据函数
 {
     char gonghao[10];
-    char s[5];
     int i;
-    zggz *p = head;
-    int flag = 1;
     
     printf("\n\t");
     printf("------------------------------查询------------------------------");
-    while(flag)
+    printf("\n\t请输入所要查询的工号：");
+    scanf("%s", gonghao);
+    for(i = 0; i < n; i ++)
     {
-        printf("\n\t请输入所要查询的工号：");
-        scanf("%s", gonghao);
-        for(i = 0; i < n; i ++)
+        if(strcmp(gonghao, zggz[i].number) == 0)
         {
-            if(strcmp(gonghao, p->number) == 0)
-            {
-                printf("\n\t");
-                printf("-----------------------所查询的职工信息为-----------------------");
+            printf("\n\t");
+            printf("-----------------------所查询的职工信息为-----------------------");
 
-                show_data(p);
+            show_data(i);
 
-                flag = 0;
-                printf("\n\t");
-                printf("----------------------------查询结束----------------------------");
-                break;
-            }
-            p = p->next;
+            printf("\n\t");
+            printf("----------------------------查询结束----------------------------");
+            break;
         }
-        if(flag == 1)
-        {
-            printf("\n\t无此工号职员信息\n");
-            printf("\n\t是否继续查询？是：y，否：任意字符\n\t");
-            scanf("%s", s);
-            if(strcmp(s, "y") == 0)
-            {
-                flag = 1;
-            }
-            else
-            {
-                flag = 0;
-            }
-        }
+    }
+    if(i == n)
+    {
+        printf("\n\t");
+        printf("-----------------------无此工号职员信息！-----------------------");
     }
 }
 
-//浏览所以职工工资信息
-void list()
+void list()    //定义浏览职工工资数据函数
 {
     int i;
-    zggz *p = head;
     printf("\n\t");
     printf("------------------------浏览职工工资数据------------------------");
     for(i = 0; i < n; i ++)
     {
-        show_data(p);
-        p = p->next;
+        show_data(i);
     }
     printf("\n\t");
     printf("----------------------------浏览结束----------------------------");
 }
 
-//修改职工工资信息（未完成）
-void modify()    
+void modify()    //定义修改职工工资数据函数
 {
     char gonghao[10], s[10];
-    int i, flag = 1;
-    zggz *p = head;
+    int i;
+
     printf("\n\t");
     printf("------------------------------修改------------------------------");
-    while(flag)
+    printf("\n\t请输入所要重新录入数据的职员工号：");
+    scanf("%s", gonghao);
+    for(i = 0; i < n; i ++)
     {
-        printf("\n\t请输入所要重新录入数据的职员工号：");
-        scanf("%s", gonghao);
-        for(i = 0; i < n; i ++)
+        if(strcmp(gonghao, zggz[i].number) == 0)
         {
-            if(strcmp(gonghao, p->number) == 0)
-            {
-                printf("\n\t请录入该职员工资数据：\n");
+            printf("\n\t请录入该职员工资数据：\n");
                 
-                //input_data(p);
-                printf("\n\t岗位工资：");    //输入岗位工资
-                scanf("%f", p->gwgz);
+            input_data(i);
 
-                printf("\n\t薪级工资：");    //输入薪级工资
-                scanf("%f", p->xjgz);
+            printf("\n\t");
+            printf("----------------------------修改结束----------------------------");
 
-                printf("\n\t职务津贴：");    //输入职务津贴
-                scanf("%f", p->subsidy);
-
-                printf("\n\t绩效工资：");    //输入绩效工资
-                scanf("%f", p->jxgz);
-
-                p->yfgz = p->gwgz + p->xjgz 
-                        + p->subsidy + p->jxgz;
-
-                grsds(p);    //计算个人所得税
-
-                p->sfgz = p->yfgz - p->tax;
-                printf("\n\t");
-                printf("----------------------------修改结束----------------------------");
-                flag = 0;    //控制循环结束
-                break;
-            }
-            p = p->next;
+            break;
         }
-        if(flag)
-        {
-            printf("\n\t无此工号职工信息\n\t");
-
-            printf("是否继续修改？是：y 否：任意字符\n\t");
-            scanf("%s", s);
-
-            if(strcmp(s, "y") == 1)
-            {
-                flag = 1;
-            }
-            else
-            {
-                flag = 0;
-            }
-        }
+    }
+    if(i == n)
+    {
+        printf("\n\t");
+        printf("-----------------------无此工号职员信息！-----------------------");
     }
 }
 
-//删除职工信息（未完成）
-void del()
+void del()    //定义删除职工工资数据函数
 {
     char gonghao[10];
     char s[5];
     int i, j;
     int flag = 1;
-    zggz *p = head;
 
     printf("\n\t");
     printf("------------------------------删除------------------------------");
@@ -376,7 +310,7 @@ void del()
     scanf("%s", gonghao);
     for(i = 0; i < n; i ++)
     {
-        if(strcmp(gonghao, p->number) == 0)
+        if(strcmp(gonghao, zggz[i].number) == 0)
         {
             printf("\n\t是否删除该职员信息？是：y，否：任意字符\n\t");
             scanf("%s", s);
@@ -384,9 +318,9 @@ void del()
             {
                 for(j = i; j < n; j ++)
                 {
-                    p = p->next;
+                    zggz[j] = zggz[j+1];//后面数据往前移
                 }
-                n -= 1;    //记录总人数
+                n -= 1;    //总工资数据数量-1
                 flag = 0;
                 printf("\n\t");
                 printf("----------------------------删除成功----------------------------");
@@ -408,110 +342,117 @@ void del()
     }
 }
 
-//添加职工工资信息（不完善，无法判断工号是否重复）
-void add()
+void add()    //定义添加职工工资数据函数
 {
-    zggz *p;
-    p = tail;
+    char s[10];
+    int i;
+    int flag = 1;    //控制循环体
+    int flag_1 = 0;  //控制是否输入数据
 
     printf("\n\t");
     printf("------------------------------添加------------------------------");
     printf("\n\t请输入职工基本信息：\n");
-    printf("\n\t职工工号：");
-    scanf("%s", p->number);
+    while(flag)
+    {
+        printf("\n\t职员工号：");    //输入职员工号
+        scanf("%s", s);
+        for(i = 0; i < n; i ++)
+        {
+            if(strcmp(s, zggz[i].number) == 0)//判断工号是否已存在
+            {
+                printf("\n\t该职员工号已存在！\n");
+                printf("\n\t是否重新输入？是：y，否：任意字符\n\t");
+                scanf("%s", s);
+                if(strcmp(s, "y") == 0)
+                {
+                    flag = 1;//同意重新输入新工号来添加职员工资信息
+                }
+                else
+                {
+                    flag = 0;//不同意重新输入，退回主菜单
+                }
+                break;//退出循环
+            }
+        }
+        if(i == n)
+        {
+            strcpy(zggz[n].number, s);//职员工号无重复，开始赋值
+            flag = 0;
+            flag_1 = 1;
+        }
+    }
+    if(flag_1)
+    {
+        printf("\n\t职员姓名：");    //输入职员姓名
+        scanf("%s", zggz[n].name);
 
-    printf("\n\t职工姓名：");
-    scanf("%s", p->name);
+        input_data(n);    //输入职员工资信息
 
-    printf("\n\t岗位工资：");    //输入岗位工资
-    scanf("%f", &(p->gwgz));
-    
-    printf("\n\t薪级工资：");    //输入薪级工资
-    scanf("%f", &(p->xjgz));
-    
-    printf("\n\t职务津贴：");    //输入职务津贴
-    scanf("%f", &(p->subsidy));
-    
-    printf("\n\t绩效工资：");    //输入绩效工资
-    scanf("%f", &(p->jxgz));
-    
-    p->yfgz = p->gwgz + p->xjgz 
-        + p->subsidy + p->jxgz;
-    
-    grsds(p);    //计算个人所得税
-    
-    p->sfgz = p->yfgz - p->tax;
-    printf("\n\t");
-    printf("--------------------------所增职工信息--------------------------");
+        printf("\n\t");
+        printf("--------------------------所增职工信息--------------------------");
 
-    show_data(p);
+        show_data(n);    //输出职员工资信息
 
-    tail = (zggz *)malloc(sizeof(zggz));
-    p->next = tail;
-    tail->prior = p;
-    tail->next = head;
-    head->prior = tail;
-    n += 1;    //数据总数+1
-
+        n += 1;    //总工资数据数量+1
+    }
     printf("\n\t");
     printf("--------------------------添加执行结束--------------------------");
 }
 
-//计算跟所得税
-void grsds(zggz *p)
+void grsds(int i)    //定义计算职工个人所得税函数
 {
     double count, tax;
     int flag = 1;
-    count = p->yfgz;    //应发工资
-    p->tax = 0;    //作累加器
-    
+    count = zggz[i].yfgz;    //应发工资
+    zggz[i].tax = 0;    //作累加器
+
     while(flag)
     {
-        if(count > 100000)
+        if(count > 100000)    //超过100000元的部分
         {
             tax = (count - 100000) * 0.45;
             count = 100000;
         }
-        else if(count > 80000)
+        else if(count > 80000)    //超过80000到100000元的部分
         {
             tax = (count - 80000) * 0.4;
             count = 80000;
         }
-        else if(count > 60000)
+        else if(count > 60000)    //超过60000到80000元的部分
         {
             tax = (count - 60000) * 0.35;
             count = 60000;
         }
-        else if(count > 40000)
+        else if(count > 40000)    //超过40000到60000元的部分
         {
             tax = (count - 40000) * 0.3;
             count = 40000;
         }
-        else if(count > 20000)
+        else if(count > 20000)    //超过20000到40000元的部分
         {
             tax = (count - 20000) * 0.25;
             count = 20000;
         }
-        else if(count > 5000)
+        else if(count > 5000)    //超过5000到20000元的部分
         {
             tax = (count - 5000) * 0.2;
             count = 5000;
         }
-        else if(count > 2000)
+        else if(count > 2000)    //超过2000到5000元的部分
         {
             tax = (count - 2000) * 0.15;
             count = 2000;
         }
-        else if(count > 500)
+        else if(count > 500)    //超过500到2000元的部分
         {
             tax = (count - 500) * 0.1;
             count = 500;
         }
-        else
+        else    //不超过500元的部分
         {
             tax = count * 0.05;
             flag = 0;    //应发工资收取个人所得税部分小于500停止
         }
-        p->tax += tax;    //累加每层的个人所得税
+        zggz[i].tax += tax;    //累加每层的个人所得税
     }
 }
